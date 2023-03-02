@@ -1,0 +1,5 @@
+{
+    "EVN":"dev",
+     "hostDomain":"http://localhost:3000",
+    "mongoURL":"mongodb+srv://nokeynoway:ANOjTSskXVQrX6N1@cluster0.u59h2.mongodb.net/?retryWrites=true&w=majority"
+}

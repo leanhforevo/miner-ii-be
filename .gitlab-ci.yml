@@ -1,0 +1,34 @@
+image: node:11
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - node_modules/
+
+stages:
+  - deployHK
+  - cleanup_build
+  
+before_script:
+  - echo "-------------before_script-------------"
+  - npm i
+  - npm install -g json-merge-cli
+  - json-merge-cli --src configs.json --dest configs.json
+            --params.EVN $CI_COMMIT_REF_NAME
+            --params.hostDomain http://ebao-dev.herokuapp.com
+  - echo configs.json
+  
+deploy_to_heroku:
+  stage: deployHK
+  script:
+    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/sku-niceapp.git
+    - git push -f heroku HEAD:master
+  only:
+    - staging
+
+cleanup_build_job:
+  stage: cleanup_build
+  script:
+    - echo "-------------deploy_to_heroku_on_failure-------------"
+    - ls
+  when: on_failure
