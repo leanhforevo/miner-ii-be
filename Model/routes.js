@@ -1,8 +1,15 @@
 const DBStore = require("../db");
 var jwt = require("jsonwebtoken");
 
+const objrate = {
+  timeRate: 43200, //12h
+  rate: 0.00832,
+  bonus: 100,
+  bonusReferal: 20
+}
+
 const returnData = (res, data) => {
-   console.log("returnData:", data);
+  console.log("returnData:", data);
   try {
     if (data == true || (typeof data == "object" && !data.error)) {
       res.send({
@@ -203,6 +210,60 @@ module.exports = {
       });
       returnData(res, data);
     });
+    //-----------------------------------------v2--------------------------
+    const ratemining = 34679;
+    app.post("/v2/login", async (req, res) => {
 
+      const objLogin = {
+        account: '',// phone, email, username
+      }
+
+      returnData(res, 'ok');
+    });
+    const objRegister = {
+      username: '',
+      email: '',
+      fullname: '',
+      password: '',
+      referalFrom: '',// use username
+
+      coin: '20',
+      timemining: '1677749043847',
+
+      isDeleted: false,
+      timeCreated: new Date().getTime(),
+    }
+    app.post("/v2/register", async (req, res) => {
+
+      const newTime = new Date().getTime();
+      console.log("New time:", newTime)
+      console.log("Diff time:", newTime - objRegister.timemining)
+      let caculatetime = newTime - objRegister.timemining
+      if (caculatetime > objrate.timeRate) {
+        caculatetime = objrate.timeRate
+      }
+      const timemineCaculate = caculatetime / 60 / 60 * objrate.rate
+      const timemineBonus = caculatetime / 60 / 60 * objrate.rate * objrate.bonus / 100
+      console.log('timemineCaculate', timemineCaculate)
+      console.log('timemineBonus', timemineBonus)
+      console.log('old coin', objRegister.coin)
+      console.log('caculate coin total', parseFloat(objRegister.coin) + parseFloat(timemineCaculate) + parseFloat(timemineBonus))
+
+      returnData(res, 'ok');
+    });
+
+    app.post("/v2/setmining", async (req, res) => {
+      const timeMining = new Date().getTime();
+      console.log("timeMining:", timeMining)
+
+      returnData(res, 'ok');
+    });
+    app.post("/v2/getAccount", async (req, res) => {
+
+      returnData(res, objRegister);
+    });
+    app.post("/v2/ratemining", async (req, res) => {
+      returnData(res, objrate);
+    });
   },
 };

@@ -80,7 +80,7 @@ const createToken = (data) => {
         res({
           infor: data,
           token: token,
-          expired: new Date().getTime() + 9999999,
+          expired: new Date().getTime() + 999999999,
         });
       }
     );

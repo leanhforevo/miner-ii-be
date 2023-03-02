@@ -18,13 +18,13 @@ var sendMail = (email, code) => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "leanhforevo@gmail.com",
-      pass: "eqizmannsvpjidbf",
+      user: "hello@iicoteck.com",
+      pass: "pjdizwfzhjxzwcvv",
     },
   });
 
   var mailOptions = {
-    from: "`${configs.appName}` <leanhforevo@gmail.com>",
+    from: "`iiCO TECK",
     to: email,
     subject: `${configs.appName} verify`,
     html: emailTemp.e(code),
