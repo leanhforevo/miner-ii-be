@@ -157,24 +157,21 @@ const verifyCode = async ({ email, activeCode }) => {
     { email: email, activeCode: activeCode },
     { $set: { active: true } }
   );
-
+console.log("data:",data)
   if (data && data.n > 0) {
     if (data && data.nModified > 0) {
-      createEMail({
-        from: configs.appName,
-        to: email,
-        title: "Chào mừng bạn đến với " + configs.appName,
-        description:
-          "Hy vọng bạn sẽ có những trải nghiệm tuyệt vời khi sử dụng ứng dụng",
-      });
       return true;
     }
     return {
       error: true,
-      msg: "Account is activate not found",
+      code:122,
+      msg: "Account is activated",
     };
   }
-  return false;
+  return {
+    error: true,
+    msg: "Account is activate not found",
+  };
 };
 const getNewCode = async ({ email }) => {
   checkConnection();

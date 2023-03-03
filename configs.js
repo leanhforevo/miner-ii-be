@@ -1,3 +1,3 @@
 module.exports = {
-    appName:"RedLine"
+    appName:"iiCO Teck"
   };
