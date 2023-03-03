@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 const UserSchema = () => {
-  var schema = new mongoose.Schema({
+  let schema = new mongoose.Schema({
     id: Object,
     fullName: String,
     phone: String,
@@ -14,9 +14,9 @@ const UserSchema = () => {
     avatar: String,
     location: String,
     detailLogin: Object,
-    notify:Object,
+    notify: Object,
   });
-  var model;
+  let model;
 
   if (mongoose.models.Users) {
     model = mongoose.model("Users");
@@ -25,8 +25,59 @@ const UserSchema = () => {
   }
   return model;
 };
+
+const UserSchemaV2 = () => {
+  let schema = new mongoose.Schema({
+    id: Object,
+    fullName: String,
+    username: String,
+    phone: String,
+    email: String,
+    birthDay: String,
+    password: String,
+    role: String,
+    active: Boolean,
+    activeCode: Number,
+    timeCreate: String,
+    avatar: String,
+    location: String,
+    detailLogin: Object,
+    notify: Object,
+    referalFrom: String,
+    //zzz
+  });
+  let model;
+
+  if (mongoose.models.Users) {
+    model = mongoose.model("Users");
+  } else {
+    model = mongoose.model("Users", schema);
+  }
+  return model;
+};
+
+const MineSchemaV2 = () => {
+  let schema = new mongoose.Schema({
+    email: String,
+    coin: String,
+    timemining: String,
+    caculatetime: String,
+    timemineCaculate: String,
+    timemineBonus: String,
+    coinCaculate: String
+    //zzz
+  });
+  let model;
+
+  if (mongoose.models.Mining) {
+    model = mongoose.model("Mining");
+  } else {
+    model = mongoose.model("Mining", schema);
+  }
+  return model;
+};
 const MailSchema = () => {
-  var schema = new mongoose.Schema({
+  let schema = new mongoose.Schema({
     from: String,
     to: String,
     title: String,
@@ -46,7 +97,7 @@ const MailSchema = () => {
     },
     active: Boolean
   });
-  var model;
+  let model;
 
   if (mongoose.models.mails) {
     model = mongoose.model("mails");
@@ -56,7 +107,7 @@ const MailSchema = () => {
   return model;
 };
 const CollectionSchema = () => {
-  var schema = new mongoose.Schema({
+  let schema = new mongoose.Schema({
     title: {
       type: String,
       default: "title"
@@ -74,7 +125,7 @@ const CollectionSchema = () => {
       default: new Date().getTime()
     }
   });
-  var model;
+  let model;
 
   if (mongoose.models.Collections) {
     model = mongoose.model("Collections");
@@ -84,7 +135,7 @@ const CollectionSchema = () => {
   return model;
 };
 var commentSchema = () => {
-  var schema = new Schema({
+  let schema = new Schema({
     byUser: String,
 
     timeCreate: {
@@ -97,7 +148,7 @@ var commentSchema = () => {
       default: false
     }
   });
-  var model;
+  let model;
 
   if (mongoose.models.comments) {
     model = mongoose.model("comments");
@@ -107,7 +158,7 @@ var commentSchema = () => {
   return model;
 };
 var reportSchema = () => {
-  var schema = new Schema({
+  let schema = new Schema({
     byEmail: String,
     typeReport: Number, //1:news/2:comment
     timeCreate: {
@@ -126,7 +177,7 @@ var reportSchema = () => {
 };
 
 const NewSchema = () => {
-  var schema = new mongoose.Schema({
+  let schema = new mongoose.Schema({
     arrImage: { type: Object, default: [] },
     title: String,
     description: String,
@@ -170,7 +221,7 @@ const NewSchema = () => {
       default: ""
     }
   });
-  var model;
+  let model;
 
   if (mongoose.models.News) {
     model = mongoose.model("News");
@@ -183,5 +234,9 @@ module.exports = {
   UserSchema,
   MailSchema,
   CollectionSchema,
-  NewSchema
+  NewSchema,
+
+  UserSchemaV2,
+  MineSchemaV2,
+
 };

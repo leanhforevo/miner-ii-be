@@ -86,8 +86,39 @@ const createToken = (data) => {
     );
   });
 };
+const parseTime = 1000
+
+const objrate = {
+  timeRate: 43200 * parseTime, //12h
+  rate: 0.00832 / parseTime,
+  bonus: 100,
+  bonusReferal: 20
+}
+const caculateTime=(mineInfo,numberReffer=0)=>{
+  console.log("numberReffer:",numberReffer)
+  const timeNow = new Date().getTime();
+  let caculatetime = timeNow - parseInt(mineInfo.timemining)
+  if (caculatetime > objrate.timeRate||caculatetime<=0) {
+    caculatetime = objrate.timeRate
+  }
+  const coinCaculate = (caculatetime / 60 / 60 * objrate.rate)||0
+  const coinBonus = (coinCaculate * objrate.bonus / 100)||0
+  const coinReferBonus = (coinCaculate * (objrate.bonusReferal/100*numberReffer))||0
+  const totalCoin = parseFloat(mineInfo.coin) + parseFloat(coinCaculate) + parseFloat(coinBonus)+parseFloat(coinReferBonus)
+  return {
+    caculatetime,
+    coinCaculate,
+    coinBonus,
+    coinReferBonus,
+    totalCoin,
+
+    isMining:caculatetime>=objrate.timeRate?false:true
+  }
+}
 module.exports = {
   removeAccent,
   cleanTMP,
   createToken,
+  caculateTime,
+  objrate
 };

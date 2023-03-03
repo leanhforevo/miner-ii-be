@@ -178,7 +178,7 @@ const e = code => {
               <!-- Logo -->
               <tr>
                 <td class="email-masthead">
-                  <a class="email-masthead_name">RedLine</a>
+                  <a class="email-masthead_name">iiCO Teck</a>
                 </td>
               </tr>
               <!-- Email Body -->
@@ -189,7 +189,7 @@ const e = code => {
                     <tr>
                       <td class="content-cell">
                         <h1>Verify your email address</h1>
-                        <p>Thanks for signing up for RedLine! We're excited to have you as an early user.</p>
+                        <p>Thanks for signing up for iiCO Teck! We're excited to have you as an early user.</p>
                         <!-- Action -->
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
                           <tr>
@@ -205,7 +205,7 @@ const e = code => {
                             </td>
                           </tr>
                         </table>
-                        <p>Thanks,<br>The Redline Team</p>
+                        <p>Thanks,<br>The iiCO Teck Team</p>
                         <!-- Sub copy 
                         <table class="body-sub">
                           <tr>
@@ -227,7 +227,7 @@ const e = code => {
                     <tr>
                       <td class="content-cell">
                         <p class="sub center">
-                          Redline Labs, Inc.
+                          iiCO Teck Labs, Inc.
                           
                         </p>
                       </td>

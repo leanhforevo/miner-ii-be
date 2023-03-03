@@ -1,5 +1,9 @@
 const DBStore = require("../db");
+const DBStoreV2 = require("../db/dbV2");
+const utils = require("../utils/utils")
 var jwt = require("jsonwebtoken");
+const appController = require('../controller');
+const appController_V2 = require('../controller');
 
 const objrate = {
   timeRate: 43200, //12h
@@ -45,8 +49,9 @@ const checkToken = (req, res) => {
     return decoded;
   } catch (error) {
     console.log("ERRTOKEN:", error);
-    res.status(403);
+    res.status(401);
     returnData(res, "Token invalid");
+    // return null
   }
 };
 var d = new Date();
@@ -211,16 +216,19 @@ module.exports = {
       returnData(res, data);
     });
     //-----------------------------------------v2--------------------------
-    const ratemining = 34679;
+    //login Account
+    app.post("/login", async function (req, res) {
+      //email,password
+      const data = await DBStore.login(req.body);
+      returnData(res, data);
+    });
     app.post("/v2/login", async (req, res) => {
 
-      const objLogin = {
-        account: '',// phone, email, username
-      }
+      const data = await DBStoreV2.login(req.body);
+      returnData(res, data);
 
-      returnData(res, 'ok');
     });
-    const objRegister = {
+    const objAccount = {
       username: '',
       email: '',
       fullname: '',
@@ -235,35 +243,41 @@ module.exports = {
     }
     app.post("/v2/register", async (req, res) => {
 
-      const newTime = new Date().getTime();
-      console.log("New time:", newTime)
-      console.log("Diff time:", newTime - objRegister.timemining)
-      let caculatetime = newTime - objRegister.timemining
-      if (caculatetime > objrate.timeRate) {
-        caculatetime = objrate.timeRate
+      const data = await DBStoreV2.register(req.body);
+      returnData(res, data);
+    });
+    app.post("/v2/getNewCode", async function (req, res) {
+      //email,activeCode
+      const data = await DBStoreV2.getNewCode(req.body);
+      returnData(res, data);
+    });
+    app.post("/v2/activeByCode", async function (req, res) {
+      //email,activeCode
+      const data = await DBStoreV2.verifyCode(req.body);
+      returnData(res, data);
+    });
+    app.get("/v2/setmine", async (req, res) => {
+      try {
+        const dataAuth = await checkToken(req, res);
+        const data = await appController.setMining(dataAuth?.data.email, dataAuth)
+        returnData(res, data);
+      } catch (error) {
+        console.log("error:", error)
+        returnData(res, null);
       }
-      const timemineCaculate = caculatetime / 60 / 60 * objrate.rate
-      const timemineBonus = caculatetime / 60 / 60 * objrate.rate * objrate.bonus / 100
-      console.log('timemineCaculate', timemineCaculate)
-      console.log('timemineBonus', timemineBonus)
-      console.log('old coin', objRegister.coin)
-      console.log('caculate coin total', parseFloat(objRegister.coin) + parseFloat(timemineCaculate) + parseFloat(timemineBonus))
-
-      returnData(res, 'ok');
     });
-
-    app.post("/v2/setmining", async (req, res) => {
-      const timeMining = new Date().getTime();
-      console.log("timeMining:", timeMining)
-
-      returnData(res, 'ok');
+    app.get("/v2/getmine", async (req, res) => {
+      try {
+        const dataAuth = await checkToken(req, res);
+        const data = await appController.getMining(dataAuth?.data.email, dataAuth)
+        returnData(res, data);
+      } catch (error) {
+        console.log("error:", error)
+        returnData(res, null);
+      }
     });
-    app.post("/v2/getAccount", async (req, res) => {
-
-      returnData(res, objRegister);
-    });
-    app.post("/v2/ratemining", async (req, res) => {
-      returnData(res, objrate);
+    app.get("/v2/ratemining", async (req, res) => {
+      returnData(res, utils.objrate);
     });
   },
 };
