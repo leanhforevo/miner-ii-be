@@ -9,7 +9,7 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       var Mining = schema.MineSchemaV2();
       var Users = schema.UserSchemaV2();
-      const numberReffer = await Users.find({ referalFrom: account?.username }).count()
+      const numberReffer = await Users.find({ referalFrom: account?.username,active:true }).count()
       let defaultOBJ = new Mining({
         email: email,
         coin: 0,
@@ -51,7 +51,7 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       var Mining = schema.MineSchemaV2();
       var Users = schema.UserSchemaV2();
-      const numberReffer = await Users.find({ referalFrom: account?.username }).count();
+      const numberReffer = await Users.find({ referalFrom: account?.username,active:true }).count();
       Mining.findOne(
         { email: email },
         "email coin timemining caculatetime timemineCaculate timemineBonus coinCaculate",
@@ -65,7 +65,7 @@ module.exports = {
 
             const newTime = new Date().getTime()
             if (!caculatetime.isMining) {
-              const data = await Mining.updateOne(
+               await Mining.updateOne(
                 { email: email },
                 { $set: { coin: caculatetime.totalCoin, timemining: newTime } }
               );

@@ -61,6 +61,7 @@ const login = ({ user, password }) => {
           } else {
             resolve({
               error: true,
+              code:102,
               msg: "Tài khoản chưa kích hoạt",
             });
           }

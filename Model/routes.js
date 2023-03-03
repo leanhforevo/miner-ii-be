@@ -5,12 +5,7 @@ var jwt = require("jsonwebtoken");
 const appController = require('../controller');
 const appController_V2 = require('../controller');
 
-const objrate = {
-  timeRate: 43200, //12h
-  rate: 0.00832,
-  bonus: 100,
-  bonusReferal: 20
-}
+
 
 const returnData = (res, data) => {
   console.log("returnData:", data);
@@ -25,6 +20,7 @@ const returnData = (res, data) => {
       res.send({
         data: false,
         isError: data.error || true,
+        code:data?.code,
         errorMessage: data.msg || data || "Something is wrong!",
       });
     }
@@ -228,19 +224,7 @@ module.exports = {
       returnData(res, data);
 
     });
-    const objAccount = {
-      username: '',
-      email: '',
-      fullname: '',
-      password: '',
-      referalFrom: '',// use username
-
-      coin: '20',
-      timemining: '1677749043847',
-
-      isDeleted: false,
-      timeCreated: new Date().getTime(),
-    }
+ 
     app.post("/v2/register", async (req, res) => {
 
       const data = await DBStoreV2.register(req.body);
