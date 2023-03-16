@@ -61,7 +61,7 @@ const login = ({ user, password }) => {
           } else {
             resolve({
               error: true,
-              code:102,
+              code: 102,
               msg: "Tài khoản chưa kích hoạt",
             });
           }
@@ -157,14 +157,14 @@ const verifyCode = async ({ email, activeCode }) => {
     { email: email, activeCode: activeCode },
     { $set: { active: true } }
   );
-console.log("data:",data)
+  console.log("data:", data)
   if (data && data.n > 0) {
     if (data && data.nModified > 0) {
       return true;
     }
     return {
       error: true,
-      code:122,
+      code: 122,
       msg: "Account is activated",
     };
   }
