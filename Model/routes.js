@@ -234,7 +234,7 @@ module.exports = {
 
     app.post("/v2/loginSocial", async function (req, res) {
       //email,password
-      const data = await DBStore.loginSocial(req.body);
+      const data = await DBStoreV2.loginSocial(req.body);
       returnData(res, data);
     });
 
