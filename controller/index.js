@@ -84,10 +84,23 @@ module.exports = {
               msg: "Still Mining!!",
             });
           } else {
-            reject({
-              error: true,
-              msg: "Somthing went wrong!",
+            const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo))
+            const newTime = new Date().getTime()
+            await Mining.updateOne(
+              { email: email },
+              { $set: { coin: 0, timemining: newTime } }
+            );
+            resolve({
+              data: {
+                ...mineInfoJSON,
+                timemining: newTime
+              },
+              msg: "mining success for first"
             });
+            // reject({
+            //   error: true,
+            //   msg: "Somthing went wrong!",
+            // });
           }
         })
     }).catch((error) => {
