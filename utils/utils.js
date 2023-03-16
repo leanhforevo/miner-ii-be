@@ -71,7 +71,7 @@ const createToken = (data) => {
       "secretSignature",
       {
         algorithm: "HS256",
-        expiresIn: 9999999,
+        expiresIn: 999999999,
       },
       (error, token) => {
         if (error) {
