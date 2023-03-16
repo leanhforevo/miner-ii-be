@@ -84,7 +84,7 @@ const loginSocial = async (req) => {
   var Users = schema.UserSchemaV2();
   const res = await Users.findOne(
     { email: userSocial.users[0].email },
-    "fullName email role active avatar phone username timeCreate"
+    "fullName email phone birthDay username role active timeCreate referalFrom"
   );
   console.log(res);
   if (res) {
