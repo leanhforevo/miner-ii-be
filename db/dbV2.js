@@ -84,7 +84,7 @@ const loginSocial = async (req) => {
   var Users = schema.UserSchemaV2();
   const res = await Users.findOne(
     { email: userSocial.users[0].email },
-    "fullName email role active avatar"
+    "fullName email role active avatar phone username timeCreate"
   );
   console.log(res);
   if (res) {
@@ -96,6 +96,7 @@ const loginSocial = async (req) => {
       id: objectId,
       fullName: userSocial.users[0].displayName,
       phone: null,
+      username:null,
       email: userSocial.users[0].email,
       avatar: userSocial.users[0].photoUrl,
       birthDay: null,
@@ -120,7 +121,7 @@ const loginSocial = async (req) => {
 };
 const updatePassword = async ({ email, oldPassword, newPassword }) => {
   checkConnection();
-  var Users = schema.UserSchema();
+  var Users = schema.UserSchemaV2();
   if (!email || !oldPassword || !newPassword)
     return {
       error: true,
@@ -143,6 +144,30 @@ const updatePassword = async ({ email, oldPassword, newPassword }) => {
   return {
     error: true,
     msg: "Old pass is incorrected",
+  };
+};
+
+const updateInfomation = async ({ email,...arg }) => {
+  checkConnection();
+  console.log("{ email,...arg }:",{ email,arg })
+  var Users = schema.UserSchemaV2();
+  if (!email )
+    return {
+      error: true,
+      msg: "Param is not correct",
+    };
+
+  const data = await Users.updateOne(
+    { email: email },
+    { $set: { ...arg } }
+  );
+  if (data && data.nModified > 0) {
+    return true;
+  }
+
+  return {
+    error: true,
+    msg: "Something went wrong!!",
   };
 };
 const verifyCode = async ({ email, activeCode }) => {
@@ -266,5 +291,5 @@ module.exports = {
   verifyCode,
   getNewCode,
   register,
-
+  updateInfomation
 };

@@ -224,6 +224,13 @@ module.exports = {
       returnData(res, data);
 
     });
+    app.post("/v2/information", async (req, res) => {
+      const dataAuth = await checkToken(req, res);
+      // const data = await appController.setMining(dataAuth?.data.email, dataAuth)
+      const data = await DBStoreV2.updateInfomation({...req.body,email:dataAuth?.data.email});
+      returnData(res, data);
+
+    });
 
     app.post("/v2/loginSocial", async function (req, res) {
       //email,password
