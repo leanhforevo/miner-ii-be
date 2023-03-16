@@ -8,7 +8,7 @@ const configs = require("../configs");
 const aws = require("../utils/aws");
 var API = require("../utils/api");
 var Utils = require("../utils/utils");
-
+const _ =require("lodash");
 const checkConnection = () => {
   if (mongoose.mongoose.connection.readyState !== 1) {
     mongoose.open();
@@ -159,7 +159,7 @@ const updateInfomation = async ({ email,...arg }) => {
 
   const data = await Users.updateOne(
     { email: email },
-    { $set: { ...arg } }
+    { $set: { ..._.pickBy(arg, _.identity) } }
   );
   if (data && data.nModified > 0) {
     return true;
