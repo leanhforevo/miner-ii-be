@@ -14,6 +14,7 @@ module.exports = {
         email: email,
         coin: 0,
         timemining: null,
+        timeRemaining:null,
         caculatetime: null,
         timemineCaculate: null,
         timemineBonus: null,
@@ -29,6 +30,7 @@ module.exports = {
             resolve({
               ...mineInfoJSON,
               ...caculatetime,
+              // timeRemaining: null,
               numberReffer
             });
           } else {
