@@ -29,6 +29,7 @@ module.exports = {
             resolve({
               ...mineInfoJSON,
               ...caculatetime,
+              numberReffer
             });
           } else {
             defaultOBJ.isMining = false

@@ -81,7 +81,7 @@ const loginSocial = async (req) => {
   const userSocial = await API.getUserSocial(req);
   if (!userSocial) return null;
   checkConnection();
-  var Users = schema.UserSchema();
+  var Users = schema.UserSchemaV2();
   const res = await Users.findOne(
     { email: userSocial.users[0].email },
     "fullName email role active avatar"

@@ -224,7 +224,13 @@ module.exports = {
       returnData(res, data);
 
     });
- 
+
+    app.post("/v2/loginSocial", async function (req, res) {
+      //email,password
+      const data = await DBStore.loginSocial(req.body);
+      returnData(res, data);
+    });
+
     app.post("/v2/register", async (req, res) => {
 
       const data = await DBStoreV2.register(req.body);
