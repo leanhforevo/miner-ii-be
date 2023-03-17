@@ -304,10 +304,11 @@ const register = async ({ fullName, username, phone, email, birthDay, password }
 
 };
 
-const removeAccount = async ({  ...arg }) => {
+const removeAccount = async ({ ...arg }) => {
   checkConnection();
-  console.log("{ email,...arg }:", {  arg })
+  console.log("{ email,...arg }:", { arg })
   var Users = schema.UserSchemaV2();
+  var Mine = schema.MineSchemaV2();
   if (!arg.data.email) {
     return {
       error: true,
@@ -319,7 +320,11 @@ const removeAccount = async ({  ...arg }) => {
     { email: arg.data.email },
     { $set: { email: arg.data.email + flagRemove, username: arg.data.username + flagRemove } }
   );
-  if (data && data.nModified > 0) {
+  const datamine = await Mine.updateOne(
+    { email: arg.data.email },
+    { $set: { email: arg.data.email + flagRemove } }
+  );
+  if (data && data.nModified > 0 && datamine && datamine.nModified > 0) {
     return true;
   }
 

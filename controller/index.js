@@ -10,6 +10,14 @@ module.exports = {
       var Mining = schema.MineSchemaV2();
       var Users = schema.UserSchemaV2();
       console.log("account:", account)
+      const checkUser = await Users.find({ email:email}).count();
+      if(checkUser<=0){
+        reject({
+          error: true,
+          msg: "Account not exist",
+        });
+      }
+      console.log("checkUsercheckUser:",checkUser)
       const numberReffer = await Users.find({ referalFrom: account?.data?.username, active: true }).count();
       const beRerral = account.data.referalFrom ? true : false
       let defaultOBJ = new Mining({
@@ -60,7 +68,7 @@ module.exports = {
       const numberReffer = await Users.find({ referalFrom: account?.username, active: true }).count();
       Mining.findOne(
         { email: email },
-        "email coin timemining caculatetime timemineCaculate timemineBonus coinCaculate",
+        "email coin timemining caculatetime timemineCaculate timemineBonus coinCaculate _id",
         async (err, mineInfo) => {
           console.log("err", err)
           console.log("mineInfo", mineInfo)
@@ -69,6 +77,7 @@ module.exports = {
             const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo))
             let caculatetime = utils.caculateTime(mineInfoJSON, numberReffer);
             const objData = {
+              userid:mineInfo._id,
               email: email,
               timemining: mineInfoJSON.timemining,
               ...utils.objrate
