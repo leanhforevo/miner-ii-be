@@ -367,6 +367,42 @@ const checkAccount = async ({ ...arg }) => {
   }).catch((error) => {
     return error;
   });
+};
+const getGroup = async ({ ...arg }) => {
+  checkConnection();
+  return new Promise((resolve, reject) => {
+    if (!arg?.data?.username ) {
+      resolve({
+        error: true,
+        msg: "Param is not corrected",
+      });
+    }
+    var Users = schema.UserSchemaV2();
+    // find each person with a last name matching 'Ghost', selecting the `name` and `occupation` fields
+    Users.find(
+      { referalFrom: arg?.data?.username },
+      "fullName email phone birthDay username role active timeCreate referalFrom",
+      async function (err, data) {
+        console.log("Dataa:",data)
+        if (err) reject(false);
+        if (data) {
+          resolve({
+            data:data,
+            error: false,
+            code: 200,
+            msg: "Success",
+          });
+        } else {
+          resolve({
+            error: true,
+            msg: "Something went wrong",
+          });
+        }
+      }
+    );
+  }).catch((error) => {
+    return error;
+  });
 
 };
 
@@ -381,5 +417,6 @@ module.exports = {
   register,
   updateInfomation,
   removeAccount,
-  checkAccount
+  checkAccount,
+  getGroup
 };
