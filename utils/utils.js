@@ -114,13 +114,17 @@ const caculateTime = (mineInfo, numberReffer = 0, beRerral) => {
     parseFloat(coinBonus) +
     parseFloat(coinReferBonus) +
     parseFloat(coinRefferral);
+    const totalCoinNoReferral = parseFloat(mineInfo.coin) +
+    parseFloat(coinCaculate) +
+    parseFloat(coinBonus) +
+    parseFloat(coinReferBonus);
   const timeRemaining = objrate.timeRate - caculatetime
   return {
     caculatetime,
     coinCaculate,
     coinBonus,
     coinReferBonus,
-    totalCoin,
+    totalCoin,totalCoinNoReferral,
     timeRemaining: timeRemaining <= 0 ? 0 : timeRemaining,
     isMining: caculatetime >= objrate.timeRate ? false : true,
     beRerral

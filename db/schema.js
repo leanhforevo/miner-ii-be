@@ -76,6 +76,26 @@ const MineSchemaV2 = () => {
   }
   return model;
 };
+const MineHistorySchemaV2 = () => {
+  let schema = new mongoose.Schema({
+    email: String,
+    coin: String,
+    timemining: String,
+    caculatetime: String,
+    timemineCaculate: String,
+    timemineBonus: String,
+    coinCaculate: String
+    //zzz
+  });
+  let model;
+
+  if (mongoose.models.MineHistory) {
+    model = mongoose.model("MineHistory");
+  } else {
+    model = mongoose.model("MineHistory", schema);
+  }
+  return model;
+};
 const MailSchema = () => {
   let schema = new mongoose.Schema({
     from: String,
@@ -238,5 +258,5 @@ module.exports = {
 
   UserSchemaV2,
   MineSchemaV2,
-
+  MineHistorySchemaV2
 };
