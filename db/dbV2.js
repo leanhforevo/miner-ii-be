@@ -151,24 +151,36 @@ const updateInfomation = async ({ email, ...arg }) => {
   checkConnection();
   console.log("{ email,...arg }:", { email, arg })
   var Users = schema.UserSchemaV2();
-  if (!email){
+  if (!email) {
     return {
       error: true,
       msg: "Param is not correct",
     };
   }
-    if(arg?.referalFrom){
-      const res = await Users.findOne(
-        { username: referalFrom },
-        "fullName email phone birthDay username role active timeCreate referalFrom"
-      );
-      if (!res) {
-        return {
-          error: true,
-          msg: "Refferal user not exist",
-        };
-      } 
+  if (arg?.username) {
+    const res = await Users.findOne(
+      { username: arg?.username },
+      "fullName email phone birthDay username role active timeCreate referalFrom"
+    );
+    if (res) {
+      return {
+        error: true,
+        msg: "Username is exist",
+      };
     }
+  }
+  if (arg?.referalFrom) {
+    const res = await Users.findOne(
+      { username: arg?.referalFrom },
+      "fullName email phone birthDay username role active timeCreate referalFrom"
+    );
+    if (!res) {
+      return {
+        error: true,
+        msg: "Refferal user not exist",
+      };
+    }
+  }
 
   const data = await Users.updateOne(
     { email: email },
@@ -292,7 +304,30 @@ const register = async ({ fullName, username, phone, email, birthDay, password }
 
 };
 
+const removeAccount = async ({  ...arg }) => {
+  checkConnection();
+  console.log("{ email,...arg }:", {  arg })
+  var Users = schema.UserSchemaV2();
+  if (!arg.data.email) {
+    return {
+      error: true,
+      msg: "Param is not correct",
+    };
+  }
+  const flagRemove = '_isDeleted_' + new Date().getTime()
+  const data = await Users.updateOne(
+    { email: arg.data.email },
+    { $set: { email: arg.data.email + flagRemove, username: arg.data.username + flagRemove } }
+  );
+  if (data && data.nModified > 0) {
+    return true;
+  }
 
+  return {
+    error: true,
+    msg: "Something went wrong!!",
+  };
+};
 
 
 
@@ -304,5 +339,6 @@ module.exports = {
   verifyCode,
   getNewCode,
   register,
-  updateInfomation
+  updateInfomation,
+  removeAccount
 };

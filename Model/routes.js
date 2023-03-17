@@ -20,7 +20,7 @@ const returnData = (res, data) => {
       res.send({
         data: false,
         isError: data.error || true,
-        code:data?.code,
+        code: data?.code,
         errorMessage: data.msg || data || "Something is wrong!",
       });
     }
@@ -227,7 +227,7 @@ module.exports = {
     app.post("/v2/information", async (req, res) => {
       const dataAuth = await checkToken(req, res);
       // const data = await appController.setMining(dataAuth?.data.email, dataAuth)
-      const data = await DBStoreV2.updateInfomation({...req.body,email:dataAuth?.data.email});
+      const data = await DBStoreV2.updateInfomation({ ...req.body, email: dataAuth?.data.email });
       returnData(res, data);
 
     });
@@ -280,6 +280,16 @@ module.exports = {
     app.get("/v2/toplist", async (req, res) => {
       try {
         const data = await appController.getTopList()
+        returnData(res, data);
+      } catch (error) {
+        console.log("error:", error)
+        returnData(res, null);
+      }
+    });
+    app.get("/v2/delete", async (req, res) => {
+      try {
+        const dataAuth = await checkToken(req, res);
+        const data = await DBStoreV2.removeAccount({ ...dataAuth });
         returnData(res, data);
       } catch (error) {
         console.log("error:", error)
