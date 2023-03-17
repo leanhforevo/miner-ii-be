@@ -21,8 +21,8 @@ before_script:
 deploy_to_heroku:
   stage: deployHK
   script:
-    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/sku-niceapp.git
-    - git push -f heroku HEAD:master
+    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/miner-ii-be.git
+    - git push -f heroku HEAD:main
   only:
     - staging
 
