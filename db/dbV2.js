@@ -333,7 +333,42 @@ const removeAccount = async ({ ...arg }) => {
     msg: "Something went wrong!!",
   };
 };
+const checkAccount = async ({ ...arg }) => {
+  checkConnection();
+  return new Promise((resolve, reject) => {
+    if (!arg?.data?.email ) {
+      resolve({
+        error: true,
+        msg: "Param is not corrected",
+      });
+    }
+    var Users = schema.UserSchemaV2();
+    // find each person with a last name matching 'Ghost', selecting the `name` and `occupation` fields
+    Users.findOne(
+      { email: arg?.data?.email },
+      "fullName email phone birthDay username role active timeCreate referalFrom",
+      async function (err, data) {
+        if (err) reject(false);
+        if (data && data.email) {
+          resolve({
+            data:data,
+            error: false,
+            code: 200,
+            msg: "Account is exist",
+          });
+        } else {
+          resolve({
+            error: true,
+            msg: "Account not exist",
+          });
+        }
+      }
+    );
+  }).catch((error) => {
+    return error;
+  });
 
+};
 
 
 module.exports = {
@@ -345,5 +380,6 @@ module.exports = {
   getNewCode,
   register,
   updateInfomation,
-  removeAccount
+  removeAccount,
+  checkAccount
 };

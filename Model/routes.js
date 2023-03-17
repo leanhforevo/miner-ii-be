@@ -296,6 +296,16 @@ module.exports = {
         returnData(res, null);
       }
     });
+    app.get("/v2/checkaccount", async (req, res) => {
+      try {
+        const dataAuth = await checkToken(req, res);
+        const data = await DBStoreV2.checkAccount({ ...dataAuth });
+        returnData(res, data);
+      } catch (error) {
+        console.log("error:", error)
+        returnData(res, null);
+      }
+    });
     // app.get("/v2/ratemining", async (req, res) => {
     //   returnData(res, utils.objrate);
     // });
