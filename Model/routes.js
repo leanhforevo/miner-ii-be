@@ -54,7 +54,7 @@ var d = new Date();
 module.exports = {
   configure: function (app) {
     app.get("/", async function (req, res) {
-      res.send("server is running at: " + d);
+      res.send("server is running at 1: " + d);
     });
 
     //register Account
