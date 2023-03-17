@@ -8,7 +8,7 @@ const configs = require("../configs");
 const aws = require("../utils/aws");
 var API = require("../utils/api");
 var Utils = require("../utils/utils");
-const _ =require("lodash");
+const _ = require("lodash");
 const checkConnection = () => {
   if (mongoose.mongoose.connection.readyState !== 1) {
     mongoose.open();
@@ -96,7 +96,7 @@ const loginSocial = async (req) => {
       id: objectId,
       fullName: userSocial.users[0].displayName,
       phone: null,
-      username:null,
+      username: null,
       email: userSocial.users[0].email,
       avatar: userSocial.users[0].photoUrl,
       birthDay: null,
@@ -147,15 +147,28 @@ const updatePassword = async ({ email, oldPassword, newPassword }) => {
   };
 };
 
-const updateInfomation = async ({ email,...arg }) => {
+const updateInfomation = async ({ email, ...arg }) => {
   checkConnection();
-  console.log("{ email,...arg }:",{ email,arg })
+  console.log("{ email,...arg }:", { email, arg })
   var Users = schema.UserSchemaV2();
-  if (!email )
+  if (!email){
     return {
       error: true,
       msg: "Param is not correct",
     };
+  }
+    if(arg?.referalFrom){
+      const res = await Users.findOne(
+        { username: referalFrom },
+        "fullName email phone birthDay username role active timeCreate referalFrom"
+      );
+      if (!res) {
+        return {
+          error: true,
+          msg: "Refferal user not exist",
+        };
+      } 
+    }
 
   const data = await Users.updateOne(
     { email: email },

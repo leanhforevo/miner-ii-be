@@ -2,6 +2,7 @@ const schedule = require("node-schedule");
 const fs = require("fs");
 var path = require("path");
 const jwt = require("jsonwebtoken");
+const _ = require("lodash");
 const tmpDir = path.join(__dirname + "/../tmp/");
 console.log("------------------------------------");
 console.log(tmpDir);
@@ -92,28 +93,37 @@ const objrate = {
   timeRate: 43200 * parseTime, //12h
   rate: 0.00832 / parseTime,
   bonus: 100,
-  bonusReferal: 20
+  bonusReferal: 20,//percent increa when mining referral
+  coinReferral: 15, // has referral will add coin
 }
-const caculateTime=(mineInfo,numberReffer=0)=>{
-  console.log("numberReffer:",numberReffer)
+const caculateTime = (mineInfo, numberReffer = 0, beRerral) => {
+  console.log("numberReffer + (beRerral ? 1 : 0):", numberReffer + (!_.isEmpty(beRerral) ? 1 : 0))
+  console.log("numberReffer :", numberReffer)
+  console.log("(beRerral ? 1 : 0):", beRerral)
   const timeNow = new Date().getTime();
   let caculatetime = timeNow - parseInt(mineInfo.timemining)
-  if (caculatetime > objrate.timeRate||caculatetime<=0) {
+  if (caculatetime > objrate.timeRate || caculatetime <= 0) {
     caculatetime = objrate.timeRate
   }
-  const coinCaculate = (caculatetime / 60 / 60 * objrate.rate)||0
-  const coinBonus = (coinCaculate * objrate.bonus / 100)||0
-  const coinReferBonus = (coinCaculate * (objrate.bonusReferal/100*numberReffer))||0
-  const totalCoin = parseFloat(mineInfo.coin) + parseFloat(coinCaculate) + parseFloat(coinBonus)+parseFloat(coinReferBonus)
-  const timeRemaining= objrate.timeRate-caculatetime
+  const coinCaculate = (caculatetime / 60 / 60 * objrate.rate) || 0
+  const coinBonus = (coinCaculate * objrate.bonus / 100) || 0
+  const coinReferBonus = (coinCaculate * (objrate.bonusReferal / 100 * numberReffer)) || 0; //percent
+  const coinRefferral = (numberReffer + (beRerral ? 1 : 0)) * objrate.coinReferral; //coin
+  const totalCoin = parseFloat(mineInfo.coin) +
+    parseFloat(coinCaculate) +
+    parseFloat(coinBonus) +
+    parseFloat(coinReferBonus) +
+    parseFloat(coinRefferral);
+  const timeRemaining = objrate.timeRate - caculatetime
   return {
     caculatetime,
     coinCaculate,
     coinBonus,
     coinReferBonus,
     totalCoin,
-    timeRemaining: timeRemaining<=0?0:timeRemaining,
-    isMining:caculatetime>=objrate.timeRate?false:true
+    timeRemaining: timeRemaining <= 0 ? 0 : timeRemaining,
+    isMining: caculatetime >= objrate.timeRate ? false : true,
+    beRerral
   }
 }
 module.exports = {

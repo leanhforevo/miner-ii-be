@@ -9,7 +9,9 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       var Mining = schema.MineSchemaV2();
       var Users = schema.UserSchemaV2();
-      const numberReffer = await Users.find({ referalFrom: account?.username,active:true }).count()
+      console.log("account:",account)
+      const numberReffer = await Users.find({ referalFrom: account?.data?.username,active:true }).count();
+      const beRerral=account.data.referalFrom?true:false
       let defaultOBJ = new Mining({
         email: email,
         coin: 0,
@@ -26,7 +28,7 @@ module.exports = {
         (err, mineInfo) => {
           if (mineInfo?.timemining) {
             const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo))
-            let caculatetime = utils.caculateTime(mineInfoJSON, numberReffer)
+            let caculatetime = utils.caculateTime(mineInfoJSON, numberReffer,beRerral)
             resolve({
               ...mineInfoJSON,
               ...caculatetime,
@@ -108,6 +110,41 @@ module.exports = {
     }).catch((error) => {
       return error;
     });
-  }
+  },
+  getTopList: () => {
+
+    return new Promise(async (resolve, reject) => {
+      var Mining = schema.MineSchemaV2();
+      // var Users = schema.UserSchemaV2();
+      // const numberReffer = await Users.find({ referalFrom: account?.username,active:true }).count();
+    const topList=await  Mining.aggregate([
+      {
+        "$lookup": {
+          "from": "users",
+          "localField": "email",
+          "foreignField": "email",
+          "as": "userDoc"
+        }
+      },
+      {
+        "$set": {
+          "username": {
+            "$first": "$userDoc.username"
+          },
+          "userActive": {
+            "$first": "$userDoc.active"
+          },
+        }
+      },
+      { "$unset": "userDoc" }
+    ]).sort({coin: -1 }).limit(2)
+
+        console.log("topList:",topList)
+        resolve(topList)
+    }).catch((error) => {
+      reject()
+      return error;
+    });
+  },
 }
 

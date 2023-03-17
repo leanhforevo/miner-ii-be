@@ -276,5 +276,18 @@ module.exports = {
     app.get("/v2/ratemining", async (req, res) => {
       returnData(res, utils.objrate);
     });
+
+    app.get("/v2/toplist", async (req, res) => {
+      try {
+        const data = await appController.getTopList()
+        returnData(res, data);
+      } catch (error) {
+        console.log("error:", error)
+        returnData(res, null);
+      }
+    });
+    // app.get("/v2/ratemining", async (req, res) => {
+    //   returnData(res, utils.objrate);
+    // });
   },
 };
