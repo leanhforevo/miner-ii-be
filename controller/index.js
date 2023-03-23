@@ -144,13 +144,16 @@ module.exports = {
             "username": {
               "$first": "$userDoc.username"
             },
-            "userActive": {
+            "isActive": {
               "$first": "$userDoc.active"
             },
+            "fullName": {
+              "$first": "$userDoc.fullName"
+            }
           }
         },
-        { "$unset": "userDoc" }
-      ]).sort({ coin: -1 }).limit(2)
+        // { "$unset": "userDoc" }
+      ]).sort({ coin: -1 }).limit(10)
 
       console.log("topList:", topList)
       resolve(topList)
