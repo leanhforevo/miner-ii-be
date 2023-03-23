@@ -1,7 +1,6 @@
-const DBV2 = require('../db/dbV2');
+const DBV2 = require("../db/dbV2");
 var schema = require("../db/schema");
-var utils = require("../utils/utils")
-
+var utils = require("../utils/utils");
 
 module.exports = {
   getMining: (email, account) => {
@@ -9,17 +8,20 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       var Mining = schema.MineSchemaV2();
       var Users = schema.UserSchemaV2();
-      console.log("account:", account)
-      const checkUser = await Users.find({ email:email}).count();
-      if(checkUser<=0){
+      console.log("account:", account);
+      const checkUser = await Users.find({ email: email }).count();
+      if (checkUser <= 0) {
         reject({
           error: true,
           msg: "Account not exist",
         });
       }
-      console.log("checkUsercheckUser:",checkUser)
-      const numberReffer = await Users.find({ referalFrom: account?.data?.username, active: true }).count();
-      const beRerral = account.data.referalFrom ? true : false
+      console.log("checkUsercheckUser:", checkUser);
+      const numberReffer = await Users.find({
+        referalFrom: account?.data?.username,
+        active: true,
+      }).count();
+      const beRerral = account.data.referalFrom ? true : false;
       let defaultOBJ = new Mining({
         email: email,
         coin: 0,
@@ -29,22 +31,26 @@ module.exports = {
         timemineCaculate: null,
         timemineBonus: null,
         coinCaculate: null,
-      })
+      });
       Mining.findOne(
         { email: email },
         "email coin timemining caculatetime timemineCaculate timemineBonus coinCaculate",
         (err, mineInfo) => {
           if (mineInfo?.timemining) {
-            const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo))
-            let caculatetime = utils.caculateTime(mineInfoJSON, numberReffer, beRerral)
+            const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo));
+            let caculatetime = utils.caculateTime(
+              mineInfoJSON,
+              numberReffer,
+              beRerral
+            );
             resolve({
               ...mineInfoJSON,
               ...caculatetime,
               // timeRemaining: null,
-              numberReffer
+              numberReffer,
             });
           } else {
-            defaultOBJ.isMining = false
+            defaultOBJ.isMining = false;
             defaultOBJ.save(function (err, miner) {
               if (err)
                 reject({
@@ -54,7 +60,8 @@ module.exports = {
               resolve(defaultOBJ);
             });
           }
-        })
+        }
+      );
     }).catch((error) => {
       return error;
     });
@@ -65,32 +72,40 @@ module.exports = {
       var Mining = schema.MineSchemaV2();
       var MineHistory = schema.MineHistorySchemaV2();
       var Users = schema.UserSchemaV2();
-      const numberReffer = await Users.find({ referalFrom: account?.username, active: true }).count();
+      const numberReffer = await Users.find({
+        referalFrom: account?.username,
+        active: true,
+      }).count();
       Mining.findOne(
         { email: email },
         "email coin timemining caculatetime timemineCaculate timemineBonus coinCaculate _id",
         async (err, mineInfo) => {
-          console.log("err", err)
-          console.log("mineInfo", mineInfo)
-
+          console.log("err", err);
+          console.log("mineInfo", mineInfo);
+          const newTime = new Date().getTime();
           if (mineInfo?.timemining) {
-            const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo))
+            const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo));
             let caculatetime = utils.caculateTime(mineInfoJSON, numberReffer);
             const objData = {
-              userid:mineInfo._id,
+              userid: mineInfo._id,
               email: email,
-              timemining: mineInfoJSON.timemining,
-              ...utils.objrate
-            }
+              timemining: newTime,
+              ...utils.objrate,
+            };
             if (!caculatetime.isMining) {
               await Mining.updateOne(
                 { email: email },
-                { $set: { coin: caculatetime.totalCoinNoReferral, timemining: objData.timemining } }
+                {
+                  $set: {
+                    coin: caculatetime.totalCoinNoReferral,
+                    timemining: objData.timemining,
+                  },
+                }
               );
               await MineHistory.collection.insertOne(objData);
               resolve({
                 data: objData,
-                msg: "set mining success"
+                msg: "set mining success",
               });
             }
 
@@ -100,8 +115,7 @@ module.exports = {
               msg: "Still Mining!!",
             });
           } else {
-            const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo))
-            const newTime = new Date().getTime()
+            const mineInfoJSON = JSON.parse(JSON.stringify(mineInfo));
             await Mining.updateOne(
               { email: email },
               { $set: { coin: 0, timemining: newTime } }
@@ -109,22 +123,22 @@ module.exports = {
             resolve({
               data: {
                 ...mineInfoJSON,
-                timemining: newTime
+                timemining: newTime,
               },
-              msg: "mining success for first"
+              msg: "mining success for first",
             });
             // reject({
             //   error: true,
             //   msg: "Somthing went wrong!",
             // });
           }
-        })
+        }
+      );
     }).catch((error) => {
       return error;
     });
   },
   getTopList: () => {
-
     return new Promise(async (resolve, reject) => {
       var Mining = schema.MineSchemaV2();
       var MineHistory = schema.MineHistorySchemaV2();
@@ -132,35 +146,36 @@ module.exports = {
       // const numberReffer = await Users.find({ referalFrom: account?.username,active:true }).count();
       const topList = await Mining.aggregate([
         {
-          "$lookup": {
-            "from": "users",
-            "localField": "email",
-            "foreignField": "email",
-            "as": "userDoc"
-          }
+          $lookup: {
+            from: "users",
+            localField: "email",
+            foreignField: "email",
+            as: "userDoc",
+          },
         },
         {
-          "$set": {
-            "username": {
-              "$first": "$userDoc.username"
+          $set: {
+            username: {
+              $first: "$userDoc.username",
             },
-            "isActive": {
-              "$first": "$userDoc.active"
+            isActive: {
+              $first: "$userDoc.active",
             },
-            "fullName": {
-              "$first": "$userDoc.fullName"
-            }
-          }
+            fullName: {
+              $first: "$userDoc.fullName",
+            },
+          },
         },
         // { "$unset": "userDoc" }
-      ]).sort({ coin: -1 }).limit(10)
+      ])
+        .sort({ coin: -1 })
+        .limit(10);
 
-      console.log("topList:", topList)
-      resolve(topList)
+      console.log("topList:", topList);
+      resolve(topList);
     }).catch((error) => {
-      reject()
+      reject();
       return error;
     });
   },
-}
-
+};

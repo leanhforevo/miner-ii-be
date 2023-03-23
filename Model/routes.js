@@ -255,6 +255,7 @@ module.exports = {
     });
     app.get("/v2/setmine", async (req, res) => {
       try {
+        console.log("set mine")
         const dataAuth = await checkToken(req, res);
         const data = await appController.setMining(dataAuth?.data.email, dataAuth)
         returnData(res, data);
