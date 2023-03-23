@@ -306,7 +306,6 @@ const register = async ({ fullName, username, phone, email, birthDay, password }
 
 const removeAccount = async ({ ...arg }) => {
   checkConnection();
-  console.log("{ email,...arg }:", { arg })
   var Users = schema.UserSchemaV2();
   var Mine = schema.MineSchemaV2();
   if (!arg.data.email) {
@@ -318,7 +317,7 @@ const removeAccount = async ({ ...arg }) => {
   const flagRemove = '_isDeleted_' + new Date().getTime()
   const data = await Users.updateOne(
     { email: arg.data.email },
-    { $set: { email: arg.data.email + flagRemove, username: arg.data.username + flagRemove } }
+    { $set: { email: arg.data.email + flagRemove } }
   );
   const datamine = await Mine.updateOne(
     { email: arg.data.email },
